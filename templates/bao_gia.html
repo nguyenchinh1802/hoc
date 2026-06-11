@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Tính Báo giá Xây dựng Online chuyên nghiệp</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f17;
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 100%);
+            --panel-bg: rgba(17, 24, 39, 0.85);
+            --panel-border: rgba(255, 255, 255, 0.06);
+            --text-title: #f9fafb;
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --accent-gold: #fbbf24;
+            --accent-green: #10b981;
+            --accent-cyan: #06b6d4;
+            --card-inner-bg: rgba(31, 41, 55, 0.45);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--accent-gold), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .app-grid {
+                grid-template-columns: 450px 1fr;
+            }
+        }
+
+        /* Glassmorphism Panel */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-title);
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--accent-gold);
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        /* Form styling */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .form-row.two-cols {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: var(--text-title);
+            font-size: 1rem;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+            background: rgba(17, 24, 39, 0.8);
+        }
+
+        /* Tabs Control */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.6rem 0.8rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-gold);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-gold);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table Results styling */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #1f2937;
+            color: var(--text-title);
+            font-weight: 600;
+            padding: 0.8rem 1rem;
+        }
+
+        td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+        }
+
+        tr.header-row td {
+            background: rgba(251, 191, 36, 0.06);
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        tr.total-row td {
+            background: rgba(16, 185, 129, 0.08);
+            color: var(--accent-green);
+            font-weight: 800;
+            font-size: 1.05rem;
+            border-top: 2px solid var(--accent-green);
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-calc {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            color: #0b0f19;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+            margin-top: 1rem;
+        }
+
+        .btn-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(251, 191, 36, 0.35);
+        }
+
+        .btn-save-cfg {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            margin-top: 1rem;
+        }
+
+        .btn-save-cfg:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Config Grid */
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .config-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .config-section {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .config-section h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 0.4rem;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+        }
+
+        .config-item label {
+            color: var(--text-secondary);
+        }
+
+        .config-item input {
+            width: 90px;
+            padding: 0.35rem 0.5rem;
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-title);
+            font-size: 0.85rem;
+            text-align: right;
+            outline: none;
+        }
+
+        .config-item input:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .quote-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quote-header h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+
+        .quote-header p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .result-summary-box {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-summary-box .title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-title);
+        }
+
+        .result-summary-box .amount {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-green);
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            width: fit-content;
+            margin: 0 auto 2rem auto;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.08);
+        }
+
+        .nav-link.active {
+            color: #0b0f19;
+            background: var(--accent-gold);
+            box-shadow: 0 4px 10px rgba(251, 191, 36, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <a href="/" class="nav-link">💵 Quản lý chi tiêu</a>
+            <a href="/bao-gia" class="nav-link active">🏗️ Báo giá xây dựng</a>
+            <a href="/phap-ly" class="nav-link">⚖️ Pháp lý xây dựng</a>
+        </nav>
+
+        <header>
+            <h1>Báo Giá Xây Dựng Cấu Hình Động</h1>
+            <p>Tính toán diện tích & đơn giá chi phí phần thô & trọn gói chính xác</p>
+        </header>
+
+        <div class="app-grid">
+            <!-- Left Panel: Inputs & Configuration Tabs -->
+            <div class="panel">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('tab-inputs', this)">1. Thông số công trình</button>
+                    <button class="tab-btn" onclick="switchTab('tab-config', this)">2. Cấu hình bảng giá</button>
+                </div>
+
+                <!-- Tab: Inputs -->
+                <div id="tab-inputs" class="tab-content active">
+                    <h3 class="section-title">Nhập thông tin cơ bản</h3>
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label for="rongtret">Chiều rộng (m)</label>
+                            <input type="number" id="rongtret" step="0.01" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="daitret">Chiều dài (m)</label>
+                            <input type="number" id="daitret" step="0.01" value="20">
+                        </div>
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label for="solau">Số lầu (tầng lầu)</label>
+                            <input type="number" id="solau" min="0" max="10" step="1" value="2">
+                        </div>
+                        <div class="form-group">
+                            <label for="loainha">Loại nhà</label>
+                            <select id="loainha">
+                                <option value="pho_1mt">Nhà phố 1 mặt tiền</option>
+                                <option value="pho_2mt">Nhà phố 2 mặt tiền</option>
+                                <option value="biet_thu">Biệt thự phố</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label for="loaixay">Gói xây dựng</label>
+                            <select id="loaixay">
+                                <option value="tho_co_ban">Phần thô cơ bản</option>
+                                <option value="tho_tiem_kiem">Phần thô tiết kiệm</option>
+                                <option value="tron_goi_1">Trọn gói - Gói Khá</option>
+                                <option value="tron_goi_2">Trọn gói - Gói Tiêu chuẩn</option>
+                                <option value="tron_goi_3">Trọn gói - Gói Cao cấp</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="loaihem">Lộ giới / Hẻm</label>
+                            <select id="loaihem">
+                                <option value="duong_lon">Đường lớn (> 5m)</option>
+                                <option value="hem_3_5">Hẻm từ 3m - 5m</option>
+                                <option value="hem_nho">Hẻm nhỏ (< 3m)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label for="loaimong">Loại móng</label>
+                            <select id="loaimong">
+                                <option value="mong_don">Móng đơn</option>
+                                <option value="mong_coc_ep">Móng cọc ép tải</option>
+                                <option value="mong_bang">Móng băng</option>
+                                <option value="mong_be">Móng bè</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="loaimai">Loại mái</label>
+                            <select id="loaimai">
+                                <option value="mai_btct">Mái bằng BTCT</option>
+                                <option value="mai_ton">Mái tôn</option>
+                                <option value="mai_ngoi">Mái ngói hệ xà gồ</option>
+                                <option value="mai_btct_ngoi">Mái BTCT dán ngói</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label for="dtsan">Diện tích sân trước/sau</label>
+                            <input type="number" id="dtsan" min="0" step="0.01" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="dttum">Diện tích tum thang (nếu có)</label>
+                            <input type="number" id="dttum" min="0" step="0.01" value="10">
+                        </div>
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label for="loaitangham">Quy mô tầng hầm</label>
+                            <select id="loaitangham">
+                                <option value="khong_ham">Không làm hầm</option>
+                                <option value="ban_ham_13">Bán hầm sâu < 1.3m</option>
+                                <option value="ham_15">Hầm sâu < 1.5m</option>
+                                <option value="ham_17">Hầm sâu < 1.7m</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="thangmay">Thang máy</label>
+                            <select id="thangmay">
+                                <option value="0">Không có thang máy</option>
+                                <option value="1">Có thang máy (hố pit + kỹ thuật)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn-action btn-calc" onclick="calculateQuote()">Tính báo giá</button>
+                </div>
+
+                <!-- Tab: Configuration -->
+                <div id="tab-config" class="tab-content">
+                    <h3 class="section-title">Cấu hình Đơn giá & Hệ số</h3>
+                    
+                    <div class="config-grid">
+                        <!-- Đơn giá phần thô -->
+                        <div class="config-section">
+                            <h4>Đơn giá xây dựng (đ/m²)</h4>
+                            <div class="config-item">
+                                <label for="cfg-tho-co-ban">Phần thô cơ bản:</label>
+                                <input type="number" id="cfg-tho-co-ban" value="4000000">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-tho-tiem-kiem">Phần thô tiết kiệm:</label>
+                                <input type="number" id="cfg-tho-tiem-kiem" value="3850000">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-tron-goi-1">Trọn gói Khá (Gói 1):</label>
+                                <input type="number" id="cfg-tron-goi-1" value="5350000">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-tron-goi-2">Trọn gói Tiêu chuẩn (Gói 2):</label>
+                                <input type="number" id="cfg-tron-goi-2" value="5850000">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-tron-goi-3">Trọn gói Cao cấp (Gói 3):</label>
+                                <input type="number" id="cfg-tron-goi-3" value="7850000">
+                            </div>
+                        </div>
+
+                        <!-- Hệ số diện tích móng -->
+                        <div class="config-section">
+                            <h4>Hệ số Móng (%)</h4>
+                            <div class="config-item">
+                                <label for="cfg-coef-mong-don">Móng đơn:</label>
+                                <input type="number" id="cfg-coef-mong-don" value="30">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-mong-coc">Móng cọc ép:</label>
+                                <input type="number" id="cfg-coef-mong-coc" value="40">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-mong-bang">Móng băng:</label>
+                                <input type="number" id="cfg-coef-mong-bang" value="50">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-mong-be">Móng bè:</label>
+                                <input type="number" id="cfg-coef-mong-be" value="100">
+                            </div>
+                        </div>
+
+                        <!-- Hệ số diện tích thân & mái -->
+                        <div class="config-section">
+                            <h4>Hệ số Thân & Mái (%)</h4>
+                            <div class="config-item">
+                                <label for="cfg-coef-tret">Tầng trệt:</label>
+                                <input type="number" id="cfg-coef-tret" value="100">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-lau">Tầng lầu:</label>
+                                <input type="number" id="cfg-coef-lau" value="100">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-tum">Tầng tum:</label>
+                                <input type="number" id="cfg-coef-tum" value="100">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-san">Sân vườn:</label>
+                                <input type="number" id="cfg-coef-san" value="50">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-santhuong">Sân thượng:</label>
+                                <input type="number" id="cfg-coef-santhuong" value="50">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-mai-btct">Mái bằng BTCT:</label>
+                                <input type="number" id="cfg-coef-mai-btct" value="50">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-mai-ton">Mái tôn:</label>
+                                <input type="number" id="cfg-coef-mai-ton" value="30">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-coef-mai-ngoi">Mái ngói:</label>
+                                <input type="number" id="cfg-coef-mai-ngoi" value="70">
+                            </div>
+                        </div>
+
+                        <!-- Phụ phí & Hệ số khác -->
+                        <div class="config-section">
+                            <h4>Điều chỉnh phụ phí (đ/m²)</h4>
+                            <div class="config-item">
+                                <label for="cfg-fee-2mt">Nhà 2 mặt tiền:</label>
+                                <input type="number" id="cfg-fee-2mt" value="120000">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-fee-bietthu">Biệt thự:</label>
+                                <input type="number" id="cfg-fee-bietthu" value="270000">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-fee-hem-3m">Hẻm 3m - 5m:</label>
+                                <input type="number" id="cfg-fee-hem-3m" value="75000">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-fee-hem-nho">Hẻm < 3m:</label>
+                                <input type="number" id="cfg-fee-hem-nho" value="300000">
+                            </div>
+                            <div class="config-item">
+                                <label for="cfg-fee-thangmay">Phụ phí Thang máy (Lump-sum):</label>
+                                <input type="number" id="cfg-fee-thangmay" value="40000000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-action btn-save-cfg" onclick="saveConfiguration()">Lưu cấu hình</button>
+                </div>
+            </div>
+
+            <!-- Right Panel: Quotation Results Table -->
+            <div class="panel">
+                <div class="quote-header">
+                    <h3>BẢNG DỰ TOÁN BÁO GIÁ CHI TIẾT</h3>
+                    <p id="quote-meta">Loại nhà: Nhà phố 1 mặt tiền | Gói: Phần thô cơ bản</p>
+                </div>
+
+                <div class="result-summary-box">
+                    <span class="title">CHI PHÍ XÂY DỰNG TẠM TÍNH (Chưa VAT):</span>
+                    <span class="amount" id="res-total-amount">0 đ</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Hạng mục chi tiết</th>
+                                <th>Đơn vị</th>
+                                <th>Diện tích (m²)</th>
+                                <th>Hệ số (%)</th>
+                                <th>Đơn giá (đ)</th>
+                                <th>Thành tiền (đ)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quote-tbody">
+                            <!-- JS will populate here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cấu hình mặc định
+        const defaultConfig = {
+            prices: {
+                tho_co_ban: 4000000,
+                tho_tiem_kiem: 3850000,
+                tron_goi_1: 5350000,
+                tron_goi_2: 5850000,
+                tron_goi_3: 7850000
+            },
+            mong_coefs: {
+                mong_don: 30,
+                mong_coc_ep: 40,
+                mong_bang: 50,
+                mong_be: 100
+            },
+            coefs: {
+                tret: 100,
+                lau: 100,
+                tum: 100,
+                san: 50,
+                santhuong: 50,
+                mai_btct: 50,
+                mai_ton: 30,
+                mai_ngoi: 70
+            },
+            fees: {
+                pho_2mt: 120000,
+                biet_thu: 270000,
+                hem_3_5: 75000,
+                hem_nho: 300000,
+                thangmay: 40000000
+            }
+        };
+
+        let activeConfig = { ...defaultConfig };
+
+        // Tải cấu hình từ localStorage khi khởi động
+        function loadConfiguration() {
+            const saved = localStorage.getItem('nhatlam_pricing_config');
+            if (saved) {
+                try {
+                    activeConfig = JSON.parse(saved);
+                    // Cập nhật giá trị vào các ô cấu hình
+                    document.getElementById('cfg-tho-co-ban').value = activeConfig.prices.tho_co_ban;
+                    document.getElementById('cfg-tho-tiem-kiem').value = activeConfig.prices.tho_tiem_kiem;
+                    document.getElementById('cfg-tron-goi-1').value = activeConfig.prices.tron_goi_1;
+                    document.getElementById('cfg-tron-goi-2').value = activeConfig.prices.tron_goi_2;
+                    document.getElementById('cfg-tron-goi-3').value = activeConfig.prices.tron_goi_3;
+
+                    document.getElementById('cfg-coef-mong-don').value = activeConfig.mong_coefs.mong_don;
+                    document.getElementById('cfg-coef-mong-coc').value = activeConfig.mong_coefs.mong_coc_ep;
+                    document.getElementById('cfg-coef-mong-bang').value = activeConfig.mong_coefs.mong_bang;
+                    document.getElementById('cfg-coef-mong-be').value = activeConfig.mong_coefs.mong_be;
+
+                    document.getElementById('cfg-coef-tret').value = activeConfig.coefs.tret;
+                    document.getElementById('cfg-coef-lau').value = activeConfig.coefs.lau;
+                    document.getElementById('cfg-coef-tum').value = activeConfig.coefs.tum;
+                    document.getElementById('cfg-coef-san').value = activeConfig.coefs.san;
+                    document.getElementById('cfg-coef-santhuong').value = activeConfig.coefs.santhuong;
+                    document.getElementById('cfg-coef-mai-btct').value = activeConfig.coefs.mai_btct;
+                    document.getElementById('cfg-coef-mai-ton').value = activeConfig.coefs.mai_ton;
+                    document.getElementById('cfg-coef-mai-ngoi').value = activeConfig.coefs.mai_ngoi;
+
+                    document.getElementById('cfg-fee-2mt').value = activeConfig.fees.pho_2mt;
+                    document.getElementById('cfg-fee-bietthu').value = activeConfig.fees.biet_thu;
+                    document.getElementById('cfg-fee-hem-3m').value = activeConfig.fees.hem_3_5;
+                    document.getElementById('cfg-fee-hem-nho').value = activeConfig.fees.hem_nho;
+                    document.getElementById('cfg-fee-thangmay').value = activeConfig.fees.thangmay;
+                } catch (e) {
+                    console.error("Lỗi đọc cấu hình lưu trữ, sử dụng mặc định.", e);
+                }
+            }
+        }
+
+        function saveConfiguration() {
+            activeConfig.prices.tho_co_ban = parseFloat(document.getElementById('cfg-tho-co-ban').value) || 0;
+            activeConfig.prices.tho_tiem_kiem = parseFloat(document.getElementById('cfg-tho-tiem-kiem').value) || 0;
+            activeConfig.prices.tron_goi_1 = parseFloat(document.getElementById('cfg-tron-goi-1').value) || 0;
+            activeConfig.prices.tron_goi_2 = parseFloat(document.getElementById('cfg-tron-goi-2').value) || 0;
+            activeConfig.prices.tron_goi_3 = parseFloat(document.getElementById('cfg-tron-goi-3').value) || 0;
+
+            activeConfig.mong_coefs.mong_don = parseFloat(document.getElementById('cfg-coef-mong-don').value) || 0;
+            activeConfig.mong_coefs.mong_coc_ep = parseFloat(document.getElementById('cfg-coef-mong-coc').value) || 0;
+            activeConfig.mong_coefs.mong_bang = parseFloat(document.getElementById('cfg-coef-mong-bang').value) || 0;
+            activeConfig.mong_coefs.mong_be = parseFloat(document.getElementById('cfg-coef-mong-be').value) || 0;
+
+            activeConfig.coefs.tret = parseFloat(document.getElementById('cfg-coef-tret').value) || 0;
+            activeConfig.coefs.lau = parseFloat(document.getElementById('cfg-coef-lau').value) || 0;
+            activeConfig.coefs.tum = parseFloat(document.getElementById('cfg-coef-tum').value) || 0;
+            activeConfig.coefs.san = parseFloat(document.getElementById('cfg-coef-san').value) || 0;
+            activeConfig.coefs.santhuong = parseFloat(document.getElementById('cfg-coef-santhuong').value) || 0;
+            activeConfig.coefs.mai_btct = parseFloat(document.getElementById('cfg-coef-mai-btct').value) || 0;
+            activeConfig.coefs.mai_ton = parseFloat(document.getElementById('cfg-coef-mai-ton').value) || 0;
+            activeConfig.coefs.mai_ngoi = parseFloat(document.getElementById('cfg-coef-mai-ngoi').value) || 0;
+
+            activeConfig.fees.pho_2mt = parseFloat(document.getElementById('cfg-fee-2mt').value) || 0;
+            activeConfig.fees.biet_thu = parseFloat(document.getElementById('cfg-fee-bietthu').value) || 0;
+            activeConfig.fees.hem_3_5 = parseFloat(document.getElementById('cfg-fee-hem-3m').value) || 0;
+            activeConfig.fees.hem_nho = parseFloat(document.getElementById('cfg-fee-hem-nho').value) || 0;
+            activeConfig.fees.thangmay = parseFloat(document.getElementById('cfg-fee-thangmay').value) || 0;
+
+            localStorage.setItem('nhatlam_pricing_config', JSON.stringify(activeConfig));
+            alert("Đã lưu cấu hình bảng giá thành công!");
+            calculateQuote();
+        }
+
+        // Định dạng tiền tệ
+        function formatVND(val) {
+            return new Intl.NumberFormat('vi-VN').format(Math.round(val)) + ' đ';
+        }
+
+        function calculateQuote() {
+            // Lấy inputs
+            const width = parseFloat(document.getElementById('rongtret').value) || 0;
+            const length = parseFloat(document.getElementById('daitret').value) || 0;
+            const solau = parseInt(document.getElementById('solau').value) || 0;
+            const loainha = document.getElementById('loainha').value;
+            const loaixay = document.getElementById('loaixay').value;
+            const loaihem = document.getElementById('loaihem').value;
+            const loaimong = document.getElementById('loaimong').value;
+            const loaimai = document.getElementById('loaimai').value;
+            const dtsan = parseFloat(document.getElementById('dtsan').value) || 0;
+            const dttum = parseFloat(document.getElementById('dttum').value) || 0;
+            const loaitangham = document.getElementById('loaitangham').value;
+            const thangmay = parseInt(document.getElementById('thangmay').value) || 0;
+
+            if (width <= 0 || length <= 0) {
+                alert("Vui lòng nhập chiều rộng và chiều dài nhà lớn hơn 0!");
+                return;
+            }
+
+            // 1. Xác định đơn giá cơ bản
+            let basePrice = activeConfig.prices[loaixay];
+            let priceAdjustment = 0;
+
+            // Điều chỉnh phụ phí loại nhà
+            if (loainha === 'pho_2mt') priceAdjustment += activeConfig.fees.pho_2mt;
+            if (loainha === 'biet_thu') priceAdjustment += activeConfig.fees.biet_thu;
+
+            // Điều chỉnh phụ phí hẻm vận chuyển
+            if (loaihem === 'hem_3_5') priceAdjustment += activeConfig.fees.hem_3_5;
+            if (loaihem === 'hem_nho') priceAdjustment += activeConfig.fees.hem_nho;
+
+            // Đơn giá sau điều chỉnh
+            const adjustedUnitPrice = basePrice + priceAdjustment;
+
+            // Cập nhật Header Meta
+            const loainhaText = document.getElementById('loainha').options[document.getElementById('loainha').selectedIndex].text;
+            const loaixayText = document.getElementById('loaixay').options[document.getElementById('loaixay').selectedIndex].text;
+            document.getElementById('quote-meta').innerText = `Loại nhà: ${loainhaText} | Gói: ${loaixayText} | Đơn giá: ${formatVND(adjustedUnitPrice)}/m²`;
+
+            // 2. Tính diện tích xây dựng chi tiết theo hệ số
+            const houseArea = width * length; // Diện tích sàn nhà chính
+            const items = [];
+            let stt = 1;
+
+            // Móng
+            let mongCoef = activeConfig.mong_coefs[loaimong];
+            let mongName = document.getElementById('loaimong').options[document.getElementById('loaimong').selectedIndex].text;
+            items.push({
+                stt: stt++,
+                name: `Móng nhà: ${mongName}`,
+                unit: 'm²',
+                area: houseArea,
+                coef: mongCoef,
+                price: adjustedUnitPrice,
+                total: houseArea * (mongCoef / 100) * adjustedUnitPrice
+            });
+
+            // Móng sân (nếu có sân)
+            if (dtsan > 0) {
+                items.push({
+                    stt: stt++,
+                    name: `Móng phần sân vườn`,
+                    unit: 'm²',
+                    area: dtsan,
+                    coef: activeConfig.coefs.san,
+                    price: adjustedUnitPrice,
+                    total: dtsan * (activeConfig.coefs.san / 100) * adjustedUnitPrice
+                });
+            }
+
+            // Tầng hầm (nếu có)
+            if (loaitangham !== 'khong_ham') {
+                let hamCoef = 150;
+                let hamName = "Tầng hầm";
+                if (loaitangham === 'ban_ham_13') { hamCoef = 150; hamName = "Bán hầm < 1.3m"; }
+                if (loaitangham === 'ham_15') { hamCoef = 170; hamName = "Hầm sâu < 1.5m"; }
+                if (loaitangham === 'ham_17') { hamCoef = 200; hamName = "Hầm sâu < 1.7m"; }
+
+                items.push({
+                    stt: stt++,
+                    name: `Tầng hầm: ${hamName}`,
+                    unit: 'm²',
+                    area: houseArea,
+                    coef: hamCoef,
+                    price: adjustedUnitPrice,
+                    total: houseArea * (hamCoef / 100) * adjustedUnitPrice
+                });
+            }
+
+            // Tầng trệt (Trong nhà)
+            items.push({
+                stt: stt++,
+                name: 'Tầng trệt: Diện tích trong nhà',
+                unit: 'm²',
+                area: houseArea,
+                coef: activeConfig.coefs.tret,
+                price: adjustedUnitPrice,
+                total: houseArea * (activeConfig.coefs.tret / 100) * adjustedUnitPrice
+            });
+
+            // Tầng trệt (Phần sân vườn)
+            if (dtsan > 0) {
+                items.push({
+                    stt: stt++,
+                    name: 'Tầng trệt: Phần sân vườn trước/sau',
+                    unit: 'm²',
+                    area: dtsan,
+                    coef: activeConfig.coefs.san,
+                    price: adjustedUnitPrice,
+                    total: dtsan * (activeConfig.coefs.san / 100) * adjustedUnitPrice
+                });
+            }
+
+            // Các tầng lầu
+            if (solau > 0) {
+                items.push({
+                    stt: stt++,
+                    name: `Thân nhà: Các tầng lầu (Số lầu: ${solau})`,
+                    unit: 'm²',
+                    area: houseArea * solau,
+                    coef: activeConfig.coefs.lau,
+                    price: adjustedUnitPrice,
+                    total: (houseArea * solau) * (activeConfig.coefs.lau / 100) * adjustedUnitPrice
+                });
+            }
+
+            // Tầng tum (Mái che thang)
+            if (dttum > 0) {
+                items.push({
+                    stt: stt++,
+                    name: 'Tầng thượng: Phần Tum che thang',
+                    unit: 'm²',
+                    area: dttum,
+                    coef: activeConfig.coefs.tum,
+                    price: adjustedUnitPrice,
+                    total: dttum * (activeConfig.coefs.tum / 100) * adjustedUnitPrice
+                });
+            }
+
+            // Sân thượng (Phần ngoài tum)
+            let sanThuongArea = houseArea - dttum;
+            if (sanThuongArea > 0) {
+                items.push({
+                    stt: stt++,
+                    name: 'Tầng thượng: Phần sân thượng trống thoáng',
+                    unit: 'm²',
+                    area: sanThuongArea,
+                    coef: activeConfig.coefs.santhuong,
+                    price: adjustedUnitPrice,
+                    total: sanThuongArea * (activeConfig.coefs.santhuong / 100) * adjustedUnitPrice
+                });
+            }
+
+            // Mái
+            let maiCoef = activeConfig.coefs.mai_btct;
+            let maiName = document.getElementById('loaimai').options[document.getElementById('loaimai').selectedIndex].text;
+            if (loaimai === 'mai_ton') maiCoef = activeConfig.coefs.mai_ton;
+            if (loaimai === 'mai_ngoi') maiCoef = activeConfig.coefs.mai_ngoi;
+            if (loaimai === 'mai_btct_ngoi') maiCoef = 100;
+
+            // Diện tích tính mái bằng diện tích tum nếu có tum, ngược lại bằng diện tích trệt
+            let areaMai = dttum > 0 ? dttum : houseArea;
+            items.push({
+                stt: stt++,
+                name: `Phần mái: ${maiName}`,
+                unit: 'm²',
+                area: areaMai,
+                coef: maiCoef,
+                price: adjustedUnitPrice,
+                total: areaMai * (maiCoef / 100) * adjustedUnitPrice
+            });
+
+            // 3. Phụ phí thang máy (Lump-sum)
+            let elevatorCost = 0;
+            if (thangmay === 1) {
+                elevatorCost = activeConfig.fees.thangmay;
+            }
+
+            // Hiển thị ra bảng
+            const tbody = document.getElementById('quote-tbody');
+            tbody.innerHTML = '';
+
+            let totalConstructionCost = 0;
+
+            items.forEach(item => {
+                totalConstructionCost += item.total;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.stt}</td>
+                    <td>${item.name}</td>
+                    <td>${item.unit}</td>
+                    <td>${item.area.toFixed(2)}</td>
+                    <td>${item.coef}%</td>
+                    <td>${formatVND(item.price)}</td>
+                    <td>${formatVND(item.total)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Thêm dòng phụ phí thang máy nếu có
+            if (thangmay === 1) {
+                totalConstructionCost += elevatorCost;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${stt++}</td>
+                    <td>Phụ phí kết cấu & hoàn thiện Thang máy</td>
+                    <td>Gói</td>
+                    <td>1.00</td>
+                    <td>100%</td>
+                    <td>${formatVND(elevatorCost)}</td>
+                    <td>${formatVND(elevatorCost)}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            // Dòng tổng cộng
+            const trTotal = document.createElement('tr');
+            trTotal.className = 'total-row';
+            trTotal.innerHTML = `
+                <td colspan="6" style="text-align: right; font-weight: 800;">CHI PHÍ XÂY DỰNG TẠM TÍNH (CHƯA VAT)</td>
+                <td>${formatVND(totalConstructionCost)}</td>
+            `;
+            tbody.appendChild(trTotal);
+
+            // Cập nhật Summary Box
+            document.getElementById('res-total-amount').innerText = formatVND(totalConstructionCost);
+        }
+
+        // Điều khiển Tabs
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // Khởi chạy
+        loadConfiguration();
+        calculateQuote();
+    </script>
+</body>
+</html>

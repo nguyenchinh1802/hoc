@@ -117,6 +117,16 @@ def delete_expense(expense_id):
     conn.close()
     return redirect(url_for("index"))
 
+@app.route("/bao-gia")
+def bao_gia():
+    # Route phục vụ trang tính báo giá xây dựng
+    return render_template("bao_gia.html")
+
+@app.route("/phap-ly")
+def phap_ly():
+    # Route phục vụ trang kiểm tra quy định xây dựng pháp lý
+    return render_template("phap_ly.html")
+
 if __name__ == "__main__":
     # Khởi chạy server ở chế độ debug để tự động tải lại code khi sửa đổi
     print("🚀 Web server đang chạy tại địa chỉ: http://127.0.0.1:5000")

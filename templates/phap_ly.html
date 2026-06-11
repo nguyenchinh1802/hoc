@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Tra cứu Quy định Cấp phép Xây dựng TP.HCM</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 100%);
+            --panel-bg: rgba(17, 24, 39, 0.85);
+            --panel-border: rgba(255, 255, 255, 0.06);
+            --text-title: #f9fafb;
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-indigo: #6366f1;
+            --card-inner-bg: rgba(31, 41, 55, 0.4);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 3rem 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.75rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .app-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+        }
+
+        /* Input Form Panel */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            padding: 2.25rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-title);
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--accent-cyan);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 640px) {
+            .input-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .input-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            padding-right: 2.5rem;
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: var(--text-title);
+            font-size: 1.1rem;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
+            background: rgba(17, 24, 39, 0.85);
+        }
+
+        .input-wrapper .unit {
+            position: absolute;
+            right: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--text-title);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        }
+
+        .btn-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.35);
+        }
+
+        .btn-calc:active {
+            transform: translateY(0);
+        }
+
+        /* Results Panel */
+        .results-panel {
+            margin-top: 2.5rem;
+            display: none;
+            animation: fadeIn 0.6s ease-in-out forwards;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .result-card {
+            background: var(--card-inner-bg);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            border-color: rgba(255, 255, 255, 0.08);
+            background: rgba(31, 41, 55, 0.5);
+        }
+
+        .card-header {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .card-row .label {
+            color: var(--text-secondary);
+        }
+
+        .card-row .value {
+            font-weight: 600;
+            color: var(--text-title);
+            font-size: 1.05rem;
+        }
+
+        .highlight-value {
+            color: var(--accent-green) !important;
+        }
+
+        .note-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.75rem;
+            line-height: 1.4;
+            border-top: 1px dashed rgba(255, 255, 255, 0.05);
+            padding-top: 0.75rem;
+        }
+
+        .table-heights {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .table-heights th, .table-heights td {
+            padding: 0.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .table-heights th {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-secondary);
+        }
+
+        /* Disclaimer Footer */
+        .footer-note {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 3rem;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            width: fit-content;
+            margin: 0 auto 2rem auto;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.08);
+        }
+
+        .nav-link.active {
+            color: #0b0f19;
+            background: var(--accent-cyan);
+            box-shadow: 0 4px 10px rgba(6, 182, 212, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <a href="/" class="nav-link">💵 Quản lý chi tiêu</a>
+            <a href="/bao-gia" class="nav-link">🏗️ Báo giá xây dựng</a>
+            <a href="/phap-ly" class="nav-link active">⚖️ Pháp lý xây dựng</a>
+        </nav>
+
+        <header>
+            <h1>Tra cứu Pháp lý Xây dựng TP.HCM</h1>
+            <p>Tự động tính toán Mật độ, Số tầng, Chiều cao & Khoảng lùi theo Quyết định 56/2021/QĐ-UBND</p>
+        </header>
+
+        <!-- Main Panel: Inputs -->
+        <div class="panel">
+            <h2 class="section-title">Nhập thông tin cơ bản</h2>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label for="dtdat">Diện tích đất</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="dtdat" placeholder="Nhập diện tích" min="0" step="0.01" value="100">
+                        <span class="unit">m²</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="rong">Chiều rộng (Mặt tiền)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="rong" placeholder="Nhập chiều rộng" min="0" step="0.01" value="5">
+                        <span class="unit">m</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="dai">Chiều dài (Cạnh dài)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="dai" placeholder="Nhập chiều dài" min="0" step="0.01" value="20">
+                        <span class="unit">m</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="logioi">Lộ giới đường/hẻm</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="logioi" placeholder="Nhập lộ giới" min="0" step="0.01" value="12">
+                        <span class="unit">m</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-calc" onclick="calculateRegulations()">Tính kết quả</button>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel" id="results-container">
+            <h2 class="section-title">Kết quả tính toán quy hoạch</h2>
+            <div class="results-grid">
+                <!-- 1. Mật độ xây dựng -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <span>1. Mật độ & Diện tích xây dựng</span>
+                        <span>QĐ 56/2021</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Mật độ xây dựng tối đa:</span>
+                        <span class="value highlight-value" id="res-density">90%</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Diện tích xây dựng tối đa:</span>
+                        <span class="value" id="res-build-area">90 m²</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Mật độ sân vườn tối thiểu:</span>
+                        <span class="value" id="res-garden-density">10%</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Diện tích sân vườn bắt buộc:</span>
+                        <span class="value" id="res-garden-area">10 m²</span>
+                    </div>
+                </div>
+
+                <!-- 2. Khoảng lùi sau nhà -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <span>2. Khoảng lùi sau nhà</span>
+                        <span>QĐ 56/2021</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Khoảng lùi sau bắt buộc:</span>
+                        <span class="value highlight-value" id="res-setback">2m</span>
+                    </div>
+                    <div class="note-text">
+                        Quy định theo chiều sâu khu đất:<br>
+                        - Chiều sâu ≤ 9m: Cho phép không chừa khoảng lùi sau.<br>
+                        - Chiều sâu 9m - 16m: Bắt buộc chừa khoảng lùi sau ≥ 1.0m.<br>
+                        - Chiều sâu ≥ 16m: Bắt buộc chừa khoảng lùi sau ≥ 2.0m.
+                    </div>
+                </div>
+
+                <!-- 3. Mật độ bộ phận phụ trợ -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <span>3. Tầng lửng & Tầng tum</span>
+                        <span>Quy chuẩn xây dựng</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Mật độ xây dựng tầng lửng tối đa:</span>
+                        <span class="value" id="res-mezzanine">65%</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Mật độ xây dựng tầng tum tối đa:</span>
+                        <span class="value" id="res-tum-density">30%</span>
+                    </div>
+                    <div class="note-text">
+                        Tầng lửng tính trên diện tích sàn trệt ngay bên dưới. Tầng tum tính trên diện tích sàn sân thượng bên dưới.
+                    </div>
+                </div>
+
+                <!-- 4. Quy định tầng hầm -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <span>4. Quy định Tầng hầm / Bán hầm</span>
+                        <span>QCXDVN</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Khả năng làm tầng hầm:</span>
+                        <span class="value highlight-value" id="res-has-basement">Trường hợp được làm bán hầm, tầng hầm</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Vị trí bắt đầu ram dốc xuống hầm:</span>
+                        <span class="value" id="res-ramp-distance">Cách ranh lộ giới ≥ 3m</span>
+                    </div>
+                    <div class="note-text">
+                        Cao độ sàn tầng trệt đối với công trình có tầng hầm không vượt quá 1,2m so với cao độ vỉa hè hiện hữu.
+                    </div>
+                </div>
+
+                <!-- 5. Độ vươn ban công -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <span>5. Độ vươn ban công tối đa</span>
+                        <span>QĐ 56/2021</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Độ vươn tối đa:</span>
+                        <span class="value highlight-value" id="res-balcony">1.2m</span>
+                    </div>
+                    <div class="note-text">
+                        Lưu ý: Độ vươn ban công phải nhỏ hơn chiều rộng vỉa hè ít nhất 1.0m. Trên phần ban công vươn ra khoảng không lộ giới không được xây dựng tường thành phòng hoặc lô-gia kín.
+                    </div>
+                </div>
+
+                <!-- 6. Quy định số tầng -->
+                <div class="result-card" id="card-floors">
+                    <div class="card-header">
+                        <span>6. Quy định Số tầng tối đa</span>
+                        <span>QĐ 56/2021</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Số tầng quy hoạch cơ bản:</span>
+                        <span class="value" id="res-floors-base">4 tầng</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Số tầng tối đa khi tăng quy mô:</span>
+                        <span class="value highlight-value" id="res-floors-max">5 tầng</span>
+                    </div>
+                    <div class="note-text">
+                        Yếu tố tăng thêm tầng bao gồm: Thuộc quận trung tâm/trung tâm cấp quận, nằm trên trục đường TM-DV, hoặc lô đất có mặt tiền lớn (> 8m).
+                    </div>
+                </div>
+
+                <!-- 7. Chiều cao tầng & công trình -->
+                <div class="result-card" style="grid-column: span 1;">
+                    <div class="card-header">
+                        <span>7. Chiều cao các tầng (m)</span>
+                        <span>QĐ 56/2021</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Tầng trệt đến Lầu 1 (Không lửng):</span>
+                        <span class="value" id="res-h-ground-no-l">3.8 m</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Tầng trệt đến Lầu 1 (Có lửng):</span>
+                        <span class="value" id="res-h-ground-with-l">5.8 m</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Các tầng giữa (Lầu 1 đến Tum):</span>
+                        <span class="value" id="res-h-middle">3.4 m</span>
+                    </div>
+                    <div class="card-row">
+                        <span class="label">Chiều cao tầng tum:</span>
+                        <span class="value" id="res-h-tum">3.0 m</span>
+                    </div>
+                </div>
+
+                <!-- 8. Tổng chiều cao công trình -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <span>8. Tổng chiều cao tối đa công trình</span>
+                        <span>QĐ 56/2021</span>
+                    </div>
+                    <table class="table-heights">
+                        <thead>
+                            <tr>
+                                <th>Trường hợp</th>
+                                <th>Đỉnh mái</th>
+                                <th>Tum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Bình thường</td>
+                                <td id="res-h-total-normal">19 m</td>
+                                <td id="res-h-total-normal-tum">16 m</td>
+                            </tr>
+                            <tr>
+                                <td>Có yếu tố tăng cao</td>
+                                <td id="res-h-total-inc">27 m</td>
+                                <td id="res-h-total-inc-tum">24 m</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="note-text" style="margin-top: 0.5rem;">
+                        <strong>Ghi chú:</strong> Chiều cao tối đa của giàn hoa, lam trang trí tại sân thượng không vượt quá 3m từ sàn mái và phải thiết kế trống thoáng tối thiểu 80%.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            Công cụ được tính toán tự động dựa trên Phụ lục 18 và Phụ lục 02 của Quyết định số 56/2021/QĐ-UBND ngày 28/12/2021 của UBND Thành phố Hồ Chí Minh.<br>
+            * Lưu ý: Kết quả mang tính chất tham khảo, bạn cần tra cứu Quy hoạch chi tiết 1/2000 hoặc thiết kế thực tế để xin giấy phép chính thức.
+        </div>
+    </div>
+
+    <script>
+        // Mật độ xây dựng nội suy theo diện tích đất
+        function getDensity(area) {
+            const table = [
+                { limit: 50, rate: 100 },
+                { limit: 75, rate: 95 },
+                { limit: 100, rate: 90 },
+                { limit: 150, rate: 80 },
+                { limit: 200, rate: 70 },
+                { limit: 300, rate: 60 },
+                { limit: 500, rate: 50 }
+            ];
+
+            if (area <= table[0].limit) return table[0].rate;
+            if (area >= table[table.length - 1].limit) return table[table.length - 1].rate;
+
+            for (let i = 0; i < table.length - 1; i++) {
+                let current = table[i];
+                let next = table[i + 1];
+                if (area >= current.limit && area <= next.limit) {
+                    // Nội suy tuyến tính
+                    let rate = current.rate - ((current.rate - next.rate) * (area - current.limit)) / (next.limit - current.limit);
+                    return Math.round(rate * 100) / 100;
+                }
+            }
+            return 50;
+        }
+
+        // Lấy khoảng lùi theo chiều dài đất
+        function getSetback(length) {
+            if (length < 9) return 0;
+            if (length < 16) return 1;
+            return 2;
+        }
+
+        // Lấy quy định số tầng, ban công, và chiều cao công trình theo lộ giới và diện tích
+        function getLoiGioiRules(logioi, area) {
+            let rules = {
+                basic_floors: 0,
+                max_floors: 0,
+                balcony: 0,
+                normal_h_max: 0,
+                normal_h_tum: 0,
+                inc_h_max: 0,
+                inc_h_tum: 0
+            };
+
+            // 1. Phân loại số tầng & chiều cao theo lộ giới
+            if (logioi < 4) {
+                rules.basic_floors = 3;
+                rules.max_floors = 3;
+                rules.normal_h_max = 11.6;
+                rules.normal_h_tum = 8.6;
+                rules.inc_h_max = 15.6;
+                rules.inc_h_tum = 12.6;
+            } else if (logioi >= 4 && logioi < 6) {
+                rules.basic_floors = 3;
+                rules.max_floors = 4;
+                rules.normal_h_max = 13.6;
+                rules.normal_h_tum = 10.6;
+                rules.inc_h_max = 22.4;
+                rules.inc_h_tum = 19.4;
+            } else if (logioi >= 6 && logioi < 16) {
+                rules.basic_floors = 4;
+                rules.max_floors = 5;
+                rules.normal_h_max = 19.0;
+                rules.normal_h_tum = 16.0;
+                rules.inc_h_max = 27.0;
+                rules.inc_h_tum = 24.0;
+            } else if (logioi === 16) {
+                rules.basic_floors = 5;
+                rules.max_floors = 6;
+                rules.normal_h_max = 23.6;
+                rules.normal_h_tum = 20.6;
+                rules.inc_h_max = 27.0;
+                rules.inc_h_tum = 24.0;
+            } else if (logioi >= 17 && logioi < 25) {
+                rules.basic_floors = 5;
+                rules.max_floors = 5;
+                rules.normal_h_max = 23.6;
+                rules.normal_h_tum = 20.6;
+                rules.inc_h_max = 27.0;
+                rules.inc_h_tum = 24.0;
+            } else { // logioi >= 25
+                rules.basic_floors = 6;
+                rules.max_floors = 6;
+                rules.normal_h_max = 23.6;
+                rules.normal_h_tum = 20.6;
+                rules.inc_h_max = 27.0;
+                rules.inc_h_tum = 24.0;
+            }
+
+            // 2. Độ vươn ban công theo lộ giới
+            if (logioi < 7) {
+                rules.balcony = 0;
+            } else if (logioi >= 7 && logioi < 12) {
+                rules.balcony = 0.9;
+            } else if (logioi >= 12 && logioi < 21) {
+                rules.balcony = 1.2;
+            } else {
+                rules.balcony = 1.4;
+            }
+
+            // 3. Nếu đất nhỏ hơn hoặc bằng 36m2, giới hạn chiều cao tối đa là 13.6m / 10.6m
+            if (area <= 36) {
+                rules.normal_h_max = 13.6;
+                rules.normal_h_tum = 10.6;
+                rules.inc_h_max = 13.6;
+                rules.inc_h_tum = 10.6;
+            }
+
+            return rules;
+        }
+
+        function calculateRegulations() {
+            // Đọc thông số
+            const area = parseFloat(document.getElementById('dtdat').value) || 0;
+            const width = parseFloat(document.getElementById('rong').value) || 0;
+            const length = parseFloat(document.getElementById('dai').value) || 0;
+            const logioi = parseFloat(document.getElementById('logioi').value) || 0;
+
+            if (area <= 0 || width <= 0 || length <= 0 || logioi <= 0) {
+                alert("Vui lòng nhập đầy đủ các thông số kích thước lớn hơn 0!");
+                return;
+            }
+
+            // 1. Tính mật độ
+            const density = getDensity(area);
+            const buildArea = (area * density) / 100;
+            const gardenDensity = 100 - density;
+            const gardenArea = (area * gardenDensity) / 100;
+
+            document.getElementById('res-density').innerText = density + '%';
+            document.getElementById('res-build-area').innerText = buildArea.toFixed(2) + ' m²';
+            document.getElementById('res-garden-density').innerText = gardenDensity + '%';
+            document.getElementById('res-garden-area').innerText = gardenArea.toFixed(2) + ' m²';
+
+            // 2. Tính khoảng lùi
+            const setback = getSetback(length);
+            document.getElementById('res-setback').innerText = setback === 0 ? "0m (Cho phép không lùi)" : setback + 'm';
+
+            // 3. Lấy thông tin số tầng & chiều cao
+            const rules = getLoiGioiRules(logioi, area);
+
+            // Cập nhật số tầng (nếu đất <= 36m2 thì ẩn phần số tầng hoặc ghi N/A)
+            const cardFloors = document.getElementById('card-floors');
+            if (area <= 36) {
+                cardFloors.style.opacity = "0.5";
+                document.getElementById('res-floors-base').innerText = "N/A (Đất ≤ 36m²)";
+                document.getElementById('res-floors-max').innerText = "N/A";
+            } else {
+                cardFloors.style.opacity = "1";
+                document.getElementById('res-floors-base').innerText = rules.basic_floors + ' tầng';
+                document.getElementById('res-floors-max').innerText = rules.max_floors + ' tầng';
+            }
+
+            // Cập nhật ban công
+            document.getElementById('res-balcony').innerText = rules.balcony === 0 ? "0m (Không được vươn)" : rules.balcony + 'm';
+
+            // Cập nhật chiều cao tổng
+            document.getElementById('res-h-total-normal').innerText = rules.normal_h_max + ' m';
+            document.getElementById('res-h-total-normal-tum').innerText = rules.normal_h_tum + ' m';
+            document.getElementById('res-h-total-inc').innerText = rules.inc_h_max + ' m';
+            document.getElementById('res-h-total-inc-tum').innerText = rules.inc_h_tum + ' m';
+
+            // Hiện kết quả
+            document.getElementById('results-container').style.display = 'block';
+            
+            // Cuộn xuống kết quả mượt mà
+            document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
