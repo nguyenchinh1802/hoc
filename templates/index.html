@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Chi tiêu Cá nhân - SQLite & Flask</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1e1e38 100%);
+            --panel-bg: rgba(23, 23, 43, 0.75);
+            --panel-border: rgba(255, 255, 255, 0.05);
+            --card-inner-bg: rgba(30, 30, 56, 0.45);
+            --text-title: #f3f4f6;
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --accent-gold: #fbbf24;
+            --accent-green: #10b981;
+            --accent-red: #f43f5e;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header design */
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--accent-gold), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Top Summary Cards */
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .summary-info h3 {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-info .amount {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-green);
+        }
+
+        .summary-info .count {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        .summary-icon {
+            font-size: 2.5rem;
+        }
+
+        /* Layout Grid */
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .app-grid {
+                grid-template-columns: 420px 1fr;
+            }
+        }
+
+        /* Glass Panels */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: var(--shadow);
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-title);
+            display: flex;
+            align-items: center;
+        }
+
+        .panel-title::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--accent-gold);
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 0.6rem;
+        }
+
+        /* Forms */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem 0.9rem;
+            background: rgba(17, 24, 39, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: var(--text-title);
+            font-size: 0.95rem;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.15);
+            background: rgba(17, 24, 39, 0.7);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            color: #0b0f19;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.15);
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(251, 191, 36, 0.3);
+        }
+
+        /* Category stats list */
+        .stats-list {
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 1.5rem;
+        }
+
+        .stats-item {
+            margin-bottom: 1rem;
+        }
+
+        .stats-item-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .stats-item-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .stats-item-val {
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-gold), var(--accent-green));
+            border-radius: 10px;
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #18182f;
+            color: var(--text-title);
+            font-weight: 600;
+            padding: 0.9rem 1.1rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 0.9rem 1.1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.01);
+            color: var(--text-title);
+        }
+
+        .td-category {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .td-amount {
+            font-weight: 700;
+            color: var(--text-title);
+        }
+
+        /* Action Buttons */
+        .btn-delete {
+            color: var(--accent-red);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(244, 63, 94, 0.08);
+            border: 1px solid rgba(244, 63, 94, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            background: var(--accent-red);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Quản Lý Chi Tiêu Cá Nhân</h1>
+            <p>Giải pháp lưu trữ thông minh sử dụng Python Flask & SQLite Database</p>
+        </header>
+
+        <!-- Top summary -->
+        <div class="summary-row">
+            <div class="summary-card">
+                <div class="summary-info">
+                    <h3>Tổng số tiền đã chi</h3>
+                    <div class="amount">{{ total_sum | format_money }}</div>
+                </div>
+                <div class="summary-icon">💸</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-info">
+                    <h3>Số lượng giao dịch</h3>
+                    <div class="count">{{ expenses | length }} lần</div>
+                </div>
+                <div class="summary-icon">📝</div>
+            </div>
+        </div>
+
+        <!-- Layout Grid -->
+        <div class="app-grid">
+            <!-- Left Column: Add form & Stats -->
+            <div>
+                <!-- Add Form -->
+                <div class="panel">
+                    <div class="panel-title">Ghi nhận chi tiêu mới</div>
+                    <form action="/add" method="POST">
+                        <div class="form-group">
+                            <label for="ngay">Ngày chi tiêu</label>
+                            <input type="date" id="ngay" name="ngay" value="{{ today }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="danh_muc">Danh mục</label>
+                            <select id="danh_muc" name="danh_muc">
+                                <option value="Ăn uống">🍔 Ăn uống</option>
+                                <option value="Di chuyển">🚗 Di chuyển</option>
+                                <option value="Mua sắm">🛍️ Mua sắm</option>
+                                <option value="Nhà cửa">🏠 Nhà cửa</option>
+                                <option value="Học tập">📚 Học tập</option>
+                                <option value="Giải trí">🎬 Giải trí</option>
+                                <option value="Sức khỏe">💊 Sức khỏe</option>
+                                <option value="Khác">⚙️ Khác</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="so_tien">Số tiền (VNĐ)</label>
+                            <input type="number" id="so_tien" name="so_tien" placeholder="Ví dụ: 50000" min="1000" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ghi_chu">Ghi chú / Mô tả</label>
+                            <input type="text" id="ghi_chu" name="ghi_chu" placeholder="Ví dụ: Mua cốc cafe sữa đá">
+                        </div>
+
+                        <button type="submit" class="btn-submit">Thêm chi tiêu</button>
+                    </form>
+                </div>
+
+                <!-- Stats by Category -->
+                {% if stats %}
+                <div class="panel" style="margin-top: 2rem;">
+                    <div class="panel-title">Tỷ trọng chi tiêu</div>
+                    <div class="stats-list">
+                        {% for row in stats %}
+                        {% set cat_name, cat_sum = row %}
+                        {% set percent = (cat_sum / total_sum * 100) if total_sum > 0 else 0 %}
+                        <div class="stats-item">
+                            <div class="stats-item-header">
+                                <span class="stats-item-name">{{ cat_name }}</span>
+                                <span class="stats-item-val">{{ cat_sum | format_money }} ({{ "%.1f" | format(percent) }}%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: {{ percent }}%;"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right Column: Detail List Table -->
+            <div class="panel">
+                <div class="panel-title">Nhật ký chi tiêu chi tiết</div>
+                
+                {% if not expenses %}
+                <div style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+                    <p>Chưa có khoản chi tiêu nào được lưu trữ.</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Vui lòng thêm chi tiêu ở form bên cạnh để bắt đầu!</p>
+                </div>
+                {% else %}
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Danh mục</th>
+                                <th>Số tiền</th>
+                                <th>Ghi chú</th>
+                                <th style="text-align: center;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in expenses %}
+                            {% set exp_id, exp_date, exp_cat, exp_amt, exp_note = row %}
+                            <tr>
+                                <td>{{ exp_date }}</td>
+                                <td class="td-category">{{ exp_cat }}</td>
+                                <td class="td-amount">{{ exp_amt | format_money }}</td>
+                                <td>{{ exp_note or '-' }}</td>
+                                <td style="text-align: center;">
+                                    <a href="/delete/{{ exp_id }}" class="btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa khoản chi này?')">Xóa</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
